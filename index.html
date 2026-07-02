@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🧚 奶茶仙境 - 梦幻关卡</title>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="game-wrapper">
+
+    <!-- ===== 顶部横幅 ===== -->
+    <div class="game-banner">
+      <div class="logo">
+        🧚 奶茶仙境
+        <span>梦幻关卡</span>
+      </div>
+      <div class="controls-hint">
+        <span>🖱️ 点击接单</span>
+        <kbd>Enter</kbd> 完成
+        <kbd>C</kbd> 清空
+      </div>
+    </div>
+
+    <!-- ===== 启动界面 - 童话风格 ===== -->
+    <div id="splashScreen">
+
+      <!-- 童话装饰元素（全部可交互） -->
+      <div class="fairy-deco" style="top:5%;left:3%;" onclick="interactDeco('⭐', '一颗小星星闪了闪✨')">
+        <span class="deco-star">⭐</span>
+        <span class="deco-tooltip">✨ 点我许愿</span>
+      </div>
+
+      <div class="fairy-deco" style="top:12%;right:5%;" onclick="interactDeco('☁️', '云朵轻轻飘过☁️')">
+        <span class="deco-cloud">☁️</span>
+        <span class="deco-tooltip">☁️ 触摸云朵</span>
+      </div>
+
+      <div class="fairy-deco" style="bottom:20%;left:5%;" onclick="interactDeco('🌈', '彩虹带来好运🌈')">
+        <span class="deco-rainbow">🌈</span>
+        <span class="deco-tooltip">🌈 抓住彩虹</span>
+      </div>
+
+      <div class="fairy-deco" style="bottom:30%;right:4%;" onclick="interactDeco('🦋', '蝴蝶飞走啦🦋')">
+        <span class="deco-butterfly">🦋</span>
+        <span class="deco-tooltip">🦋 蝴蝶仙子</span>
+      </div>
+
+      <div class="fairy-deco" style="top:35%;left:2%;" onclick="interactDeco('🦄', '独角兽向你点头🦄')">
+        <span class="deco-unicorn">🦄</span>
+        <span class="deco-tooltip">🦄 独角兽</span>
+      </div>
+
+      <div class="fairy-deco" style="top:45%;right:2%;" onclick="interactDeco('💎', '宝石闪闪发光💎')">
+        <span class="deco-gem">💎</span>
+        <span class="deco-tooltip">💎 神奇宝石</span>
+      </div>
+
+      <div class="fairy-deco" style="bottom:8%;left:15%;" onclick="interactDeco('✨', '魔法棒挥一挥✨')">
+        <span class="deco-wand">✨</span>
+        <span class="deco-tooltip">✨ 魔法棒</span>
+      </div>
+
+      <!-- 主内容 -->
+      <div class="splash-icon" id="splashIcon" onclick="interactDeco('🧋', '奶茶精灵说：来一杯梦幻奶茶吧！🧋')">🧋</div>
+      <div class="splash-title" id="splashTitle" onclick="interactDeco('🌟', '🌟 欢迎来到奶茶仙境！')">奶茶仙境</div>
+      <div class="splash-subtitle">✦ 梦幻关卡 ✦</div>
+      <div class="splash-divider"></div>
+
+      <!-- 特性标签（每个都可交互） -->
+      <div class="splash-features">
+        <span class="tag" onclick="interactDeco('📊', '🌈 共有10个梦幻关卡等待你挑战！')">
+          📊 10关
+          <span class="tag-tip">✨ 点击查看</span>
+        </span>
+        <span class="tag" onclick="interactDeco('⭐', '🌟 完成关卡获得星星评价！')">
+          ⭐ 星级评价
+          <span class="tag-tip">✨ 点击查看</span>
+        </span>
+        <span class="tag" onclick="interactDeco('🔥', '🔥 连续正确制作触发连击！')">
+          🔥 连击加成
+          <span class="tag-tip">✨ 点击查看</span>
+        </span>
+        <span class="tag" onclick="interactDeco('🏆', '🏆 打破记录，成为奶茶大师！')">
+          🏆 最高纪录
+          <span class="tag-tip">✨ 点击查看</span>
+        </span>
+      </div>
+
+      <button class="btn-start" id="btnStartGame">
+        <span>🌟</span> 开始冒险
+      </button>
+
+      <div class="splash-instructions">
+        <p>🧚 完成梦幻订单 · 收集星星 · 解锁仙境关卡</p>
+        <div class="keys">
+          <kbd>🖱️ 点击订单接单</kbd>
+          <kbd>Enter 完成制作</kbd>
+          <kbd>C 清空选择</kbd>
+        </div>
+      </div>
+      <div class="splash-footer">✨ 点击任何装饰都有惊喜 ✨</div>
+
+      <!-- 梦幻星星计数器 -->
+      <div class="star-counter" id="starCounter" onclick="interactDeco('🌟', '你收集了 ' + (parseInt(localStorage.getItem('fairyStars')) || 0) + ' 颗梦幻星星！')">
+        🌟 <span id="starCountDisplay">0</span> 颗
+      </div>
+    </div>
+
+    <!-- ===== 游戏主界面 ===== -->
+    <div id="gameScreen" class="hide">
+
+      <!-- 标题栏 -->
+      <div class="game-title-bar">
+        <div class="title-left">
+          <button class="back-btn" id="btnBackToMenu">🏠</button>
+          <span class="game-title-text">🧚 奶茶仙境</span>
+          <span class="level-badge" id="levelBadge">第 1 关</span>
+        </div>
+        <div class="title-right">
+          <kbd>Enter</kbd> 完成
+          <kbd>C</kbd> 清空
+        </div>
+      </div>
+
+      <!-- 关卡进度 -->
+      <div class="level-progress">
+        <span class="label">📊 关卡进度</span>
+        <div class="track">
+          <div class="fill" id="levelProgressFill"></div>
+        </div>
+        <span class="count" id="levelProgressCount">0/5</span>
+      </div>
+
+      <!-- ===== 横屏主区域 ===== -->
+      <div class="game-main">
+
+        <!-- 左侧：订单队列 -->
+        <div class="order-queue" id="orderQueue">
+          <div class="queue-title">
+            <span>📋 待处理订单</span>
+            <span class="count" id="orderCount">0</span>
+          </div>
+          <div id="orderList"></div>
+        </div>
+
+        <!-- 右侧：操作面板 -->
+        <div class="right-panel">
+
+          <!-- 状态栏 -->
+          <div class="status-bar">
+            <div class="stat">
+              <span class="stat-icon">❤️</span>
+              <span class="stat-value" id="healthDigits">❤️❤️❤️</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">🪙</span>
+              <span class="stat-value" id="coinDigits">0</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">🔥</span>
+              <span class="stat-value" id="comboDigits">0</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">✅</span>
+              <span class="stat-value" id="servedDigits">0</span>
+            </div>
+          </div>
+
+          <!-- 操作台 -->
+          <div class="prep-station" id="prepStation">
+            <div class="step-block">
+              <div class="step-header"><span class="step-badge">🍵 茶底</span></div>
+              <div class="option-grid" id="teaOptions"></div>
+            </div>
+            <div class="step-block">
+              <div class="step-header"><span class="step-badge">🍬 甜度</span></div>
+              <div class="option-grid" id="sugarOptions"></div>
+            </div>
+            <div class="step-block">
+              <div class="step-header"><span class="step-badge">🧋 加料</span></div>
+              <div class="option-grid" id="toppingOptions"></div>
+            </div>
+            <div class="step-block">
+              <div class="step-header"><span class="step-badge">🧊 冰块</span></div>
+              <div class="option-grid" id="iceOptions"></div>
+            </div>
+          </div>
+
+          <!-- 预览区 -->
+          <div class="preview-zone" id="previewZone">
+            <div class="preview-icons">🧋</div>
+            <div class="preview-hint">点击订单开始制作</div>
+          </div>
+
+          <!-- 按钮 -->
+          <div class="actions">
+            <button class="action-btn clear-btn" id="btnClear">🗑️ 清空</button>
+            <button class="action-btn complete-btn" id="btnComplete" disabled>✅ 完成</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== 反馈弹窗 ===== -->
+  <div class="overlay" id="feedbackOverlay">
+    <div class="feedback-card">
+      <div class="feedback-banner" id="feedbackBanner">✅</div>
+      <div class="feedback-detail" id="feedbackDetail"></div>
+    </div>
+  </div>
+
+  <!-- ===== 结算弹窗 ===== -->
+  <div class="overlay" id="settlementModal">
+    <div class="settlement-card">
+      <div class="gameover-banner" id="settlementBanner">🏁 关卡完成！</div>
+      <div class="stars-display" id="starsDisplay">⭐⭐⭐</div>
+      <div class="stat-row"><span>📦 完成订单</span><span class="stat-val" id="finalServed">0</span></div>
+      <div class="stat-row"><span>🪙 金币</span><span class="stat-val" id="finalCoins">0</span></div>
+      <div class="stat-row"><span>🔥 最高连击</span><span class="stat-val" id="finalCombo">0</span></div>
+      <div class="stat-row"><span>💨 最快单秒</span><span class="stat-val" id="finalSpeed">0s</span></div>
+      <div id="highScoreArea"></div>
+      <button class="restart-btn" id="btnRestart">🔄 再来一局</button>
+    </div>
+  </div>
+  <script src="./js/game.js"></script>
+</body>
+</html>
